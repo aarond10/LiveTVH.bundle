@@ -231,14 +231,7 @@ def MainMenu():
         try:
             tvhEPGURL = str(tvhAddress) + '/api/epg/events/grid?start=0&limit=' + str(epgLoopLimit)
 
-            if epgUTF8Encoding:
-                epgEncoding = 'utf-8'
-            else:
-                epgEncoding = 'latin-1'
-
-            rawEPGData = HTTP.Request(url=tvhEPGURL, headers=tvhHeaders, cacheTime=epgCacheTime, encoding=epgEncoding, values=None).content
-            rawEPGData = re.sub(r'[\x00-\x1f]', '', rawEPGData) # Strip control characters from EPG data (yep, this has actually happened)
-            tvhEPGData = JSON.ObjectFromString(rawEPGData, encoding='utf-8', max_size=20971520)
+            tvhEPGData = JSON.ObjectFromURL(url=tvhEPGURL, headers=tvhHeaders, values=None, cacheTime=channelDataCacheTime).content
             if tvhEPGData: break
 
         except Exception as e:
